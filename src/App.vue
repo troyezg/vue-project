@@ -58,8 +58,19 @@
 <div className="CarPageSelector">
   <p className="SomeSmallText">Select vehicles per page:</p>
   <div className="CarPerPageForm">
-    <p className="Option">9</p>
-    <img src="./assets/chevron_down.svg" className="Arrow"/>
+    <p className="Option" v-if="PerPageUpdater">{{PerPageUpdater}}</p>
+    <img src="./assets/chevron_down.svg" className="Arrow" @click="PerPageDropDown()"/>
+  </div>
+  <div className="CarPerPageFormOptions" v-if="Selector" :key="Selector">
+    <div className="CarPerPageOption" id="Option6" @click="NewPerpage(6)">
+      <p className="Option">6</p>
+    </div>
+    <div className="CarPerPageOption" id="Option9" @click="NewPerpage(9)">
+      <p className="Option">9</p>
+    </div>
+    <div className="CarPerPageOption" id="Option12" @click="NewPerpage(12)">
+      <p className="Option">12</p>
+    </div>
   </div>
 </div>
 
@@ -70,115 +81,26 @@
   </div>
 </div>
 
-<div className="CardsBlock">
-  <div className="Card">
+<div className="CardsBlock" v-if="CurrentPage" :key="CurrentPage.data">
+  <div className="Card" v-for="(item, index) in CurrentPage.data.slice(0, PerPageUpdater)" :key="item.vehicle_name">
     <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
+    <img :src="item.preview" className="CarPhoto" />
+    <p className="SomeBigText">{{ item.vehicle_name }}</p>
+    <p className="SomeSmallText3">{{ item.vin }}</p>
     <div className="SomeLine"></div>
     <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card" v-if="CurrentPage" :key="CurrentPage.data.vehicle_name">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img :src="CurrentPage.data[4].preview" className="CarPhoto" />
-    <p className="SomeBigText">{{CurrentPage.data[4].vehicle_name}}</p>
-    <p className="SomeSmallText3">{{CurrentPage.data[4].vin}}</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">{{CurrentPage.data[4].uploads}}/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
-    </div>
-    <p className="SomeSmallText4">3 days left</p>
-  </div>
-  <div className="Card">
-    <img src="./assets/more_horizontal.svg" className="tripledot" />
-    <img src="./assets/mersedes 1.png" className="CarPhoto" />
-    <p className="SomeBigText">Mercedes-Benz C-Class</p>
-    <p className="SomeSmallText3">WDB 1400321A333419</p>
-    <div className="SomeLine"></div>
-    <div className="Badge2">
-      <p className="HeaderSmallText1">5/30</p>
+      <p className="HeaderSmallText1">{{ item.uploads }}/30</p>
     </div>
     <p className="SomeSmallText4">3 days left</p>
   </div>
   <div className="BottomThings">
-    <p className="SomeSmallText5">Showing 9 out of 256</p>
-
+    <p className="SomeSmallText5" >Showing 9 out of {{CurrentPage.meta.total}}</p>
     <div className="Pagination">
-      <img src="./assets/chevron_down.svg" style="transform: rotate(90deg);"/>
-      <input type="text" placeholder="1" class="PageCounter" />
+      <img @click="PrevPage();" src="./assets/chevron_down.svg" style="transform: rotate(90deg);" />
+      <input type="text" @keyup.enter="PageInput($event.target.value);" :placeholder="ActivePages()" class="PageCounter" />
       <p className="SomeSmallText6">of</p>
-      <input type="text" placeholder="28" class="PageCounter" readonly>
-      <img src="./assets/chevron_down.svg" style="transform: rotate(-90deg);"/>
+      <input type="text" :placeholder="TotalPages()" class="PageCounter" readonly>
+      <img @click="NextPage();" src="./assets/chevron_down.svg" style="transform: rotate(-90deg);" />
     </div>
   </div>
 </div>
@@ -188,19 +110,31 @@
 </template>
 
 <script>
+var page = 1;
+var perpage = 9;
+var search = undefined;
+
+
+
 function CurrentFilters() 
-{
-  var page = 1;
-  var perpage = 9;
+{ 
+  if (search == undefined) {
   var request = 'https://api.caiman-app.de/api/cars-test?per_page='+ perpage +'&page='+ page +'';
+  } else {
+  var request = 'https://api.caiman-app.de/api/cars-test?search='+ search +'&per_page='+ perpage +'&page='+ page +'';
+  }
+
   return request;
+
 }
 
 export default {
 data() {
 return {
 CurrentPage: null,
-request: CurrentFilters()
+request: CurrentFilters(),
+Selector: false,
+PerPageUpdater: perpage,
 }
 },
 mounted() {
@@ -212,12 +146,68 @@ fetch(this.request)
 .then(response => response.json())
 .then(data => {
 console.log('Data resolved:', data);
-this.CurrentPage = data;
-console.log('CurrentPage:', this.CurrentPage);
+if (data.meta.current_page <= data.meta.last_page) {
+  this.CurrentPage = data;
+} else {
+  page = data.meta.last_page;
+}
+this.PerPageCounter();
 })
 .catch(error => {
 console.error('Произошла ошибка:', error);
 });
+},
+NextPage() {
+  
+  if (page < this.CurrentPage.meta.last_page ) {
+  page = page + 1;
+  console.log(page);
+  this.request = CurrentFilters(page);
+  this.getCurrentPageData();
+  }
+},
+PrevPage() {
+  if (page > 1) {
+  page = page - 1;
+  console.log(page);
+  this.request = CurrentFilters(page);
+  this.getCurrentPageData();
+  }
+},
+PageInput(x) {
+if (x > 0 && x <= this.CurrentPage.meta.last_page) {
+  page = x;
+  this.request = CurrentFilters(page);
+  this.getCurrentPageData();
+}
+},
+TotalPages() {
+  return this.CurrentPage.meta.last_page;
+},
+ActivePages() {
+  return this.CurrentPage.meta.current_page;
+},
+PerPageCounter() {
+  if (perpage != this.PerPageUpdater) {
+    this.PerPageUpdater = perpage;
+  }
+},
+NewPerpage(x) {
+  perpage = x;
+  this.request = CurrentFilters();
+  this.getCurrentPageData();
+  let cleaning = document.getElementById('Option6');
+  cleaning.className = "CarPerPageOption";
+  cleaning = document.getElementById('Option9');
+  cleaning.className = "CarPerPageOption";
+  cleaning = document.getElementById('Option12');
+  cleaning.className = "CarPerPageOption";
+  let updatepart = document.getElementById('Option'+ perpage +'');
+  updatepart.className = "CarPerPageOptionActive";
+  this.Selector = false;
+},
+PerPageDropDown(){
+  this.Selector =!this.Selector;
 }
 },
 }
@@ -583,6 +573,42 @@ height: 42px;
 left: 672px;
 top: 138px;
 }
+
+.CarPerPageFormOptions {
+/* Form/Input */
+
+box-sizing: border-box;
+position: absolute;
+display: flex;
+flex-direction: column;
+height: 126px;
+width: 85px;
+right: 0px;
+top: 45px;
+z-index: 5;
+/* Text/Line Gray */
+border: 1px solid #E4E4E4;
+border-radius: 8px;
+gap: 1px;
+padding: 2px;
+background-color: #ffffff;
+}
+
+.CarPerPageOption {
+  /* Form/Input */
+
+box-sizing: border-box;
+position: relative;
+height: 42px;
+width: auto;
+z-index: 5;
+/* Text/Line Gray */
+padding: 9px 16px;
+border-radius: 8px;
+background-color: #FFFFFF;
+}
+
+
 
 .SomeSmallText {
 /* Select vehicles per page: */
