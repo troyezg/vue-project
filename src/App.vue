@@ -165,7 +165,6 @@ getCurrentPageData() {
 fetch(this.request)
 .then(response => response.json())
 .then(data => {
-console.log('Data resolved:', data);
 if (data.meta.current_page <= data.meta.last_page) {
   this.CurrentPage = data;
 } else {
@@ -181,7 +180,6 @@ NextPage() {
   
   if (page < this.CurrentPage.meta.last_page ) {
   page = page + 1;
-  console.log(page);
   this.request = CurrentFilters(page);
   this.getCurrentPageData();
   }
@@ -189,7 +187,6 @@ NextPage() {
 PrevPage() {
   if (page > 1) {
   page = page - 1;
-  console.log(page);
   this.request = CurrentFilters(page);
   this.getCurrentPageData();
   }
@@ -231,7 +228,6 @@ SearchInput(x) {
 },
 SearchEnter(x) {
   search = this.SearchUpdater;
-  console.log(this.CurrentPage.meta.total);
   this.request = CurrentFilters(page);
   this.getCurrentPageData();
 }
