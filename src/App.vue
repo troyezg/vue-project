@@ -51,16 +51,21 @@
 </div>
 
 <div className="SearchFormDiv">
-  <input type="text" className="SearchForm" placeholder="Search VIN" />
+  <input type="text" className="SearchForm" placeholder="Search VIN"  @keyup.enter="SearchEnter($event.target.value);" @input="SearchInput($event.target.value);"/>
+  <div className="SearchIcon" @click="SearchEnter($event.target.value);">
   <img src="./assets/iconsearch.svg" />
+  </div>
 </div>
 
 <div className="CarPageSelector">
   <p className="SomeSmallText">Select vehicles per page:</p>
   <div className="CarPerPageForm">
     <p className="Option" v-if="PerPageUpdater">{{PerPageUpdater}}</p>
-    <img src="./assets/chevron_down.svg" className="Arrow" @click="PerPageDropDown()"/>
+    <div className="ArrowButton2" @click="PerPageDropDown()">
+    <img src="./assets/chevron_down.svg" className="Arrow" />
+    </div>
   </div>
+<Transition name="DropDownMenu">
   <div className="CarPerPageFormOptions" v-if="Selector" :key="Selector">
     <div className="CarPerPageOption" id="Option6" @click="NewPerpage(6)">
       <p className="Option">6</p>
@@ -72,6 +77,7 @@
       <p className="Option">12</p>
     </div>
   </div>
+</Transition>
 </div>
 
 <div className="AddVecButton">
@@ -81,9 +87,12 @@
   </div>
 </div>
 
+<div className="MainGroup">
 <div className="CardsBlock" v-if="CurrentPage" :key="CurrentPage.data">
   <div className="Card" v-for="(item, index) in CurrentPage.data.slice(0, PerPageUpdater)" :key="item.vehicle_name">
+    <div className="TripleDotAnimation">
     <img src="./assets/more_horizontal.svg" className="tripledot" />
+    </div>
     <img :src="item.preview" className="CarPhoto" />
     <p className="SomeBigText">{{ item.vehicle_name }}</p>
     <p className="SomeSmallText3">{{ item.vin }}</p>
@@ -93,23 +102,33 @@
     </div>
     <p className="SomeSmallText4">3 days left</p>
   </div>
-  <div className="BottomThings">
-    <p className="SomeSmallText5" >Showing 9 out of {{CurrentPage.meta.total}}</p>
+</div>
+<div className="Stub" v-if="CurrentPage && CurrentPage.meta.total == 0">
+  <p className="SomeSmallText7">Look's like there is nothing...</p>
+  <p className="SomeSmallText7">Try to search something else.</p>
+</div>
+<div className="BottomThings" v-if="CurrentPage" :key="CurrentPage.meta">
+    <p className="SomeSmallText5">Showing 9 out of {{CurrentPage.meta.total}}</p>
     <div className="Pagination">
-      <img @click="PrevPage();" src="./assets/chevron_down.svg" style="transform: rotate(90deg);" />
+      <div class="ArrowButton" @click="PrevPage();">
+      <img src="./assets/chevron_down.svg" style="transform: rotate(90deg); pointer-events: none;" />
+      </div>
       <input type="text" @keyup.enter="PageInput($event.target.value);" :placeholder="ActivePages()" class="PageCounter" />
       <p className="SomeSmallText6">of</p>
       <input type="text" :placeholder="TotalPages()" class="PageCounter" readonly>
-      <img @click="NextPage();" src="./assets/chevron_down.svg" style="transform: rotate(-90deg);" />
+      <div class="ArrowButton" @click="NextPage();">
+      <img src="./assets/chevron_down.svg" style="transform: rotate(-90deg); pointer-events: none;" />
+      </div>
     </div>
   </div>
 </div>
 
 
-
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
+
 var page = 1;
 var perpage = 9;
 var search = undefined;
@@ -135,6 +154,7 @@ CurrentPage: null,
 request: CurrentFilters(),
 Selector: false,
 PerPageUpdater: perpage,
+SearchUpdater: '',
 }
 },
 mounted() {
@@ -196,18 +216,24 @@ NewPerpage(x) {
   perpage = x;
   this.request = CurrentFilters();
   this.getCurrentPageData();
-  let cleaning = document.getElementById('Option6');
-  cleaning.className = "CarPerPageOption";
-  cleaning = document.getElementById('Option9');
-  cleaning.className = "CarPerPageOption";
-  cleaning = document.getElementById('Option12');
-  cleaning.className = "CarPerPageOption";
-  let updatepart = document.getElementById('Option'+ perpage +'');
-  updatepart.className = "CarPerPageOptionActive";
   this.Selector = false;
 },
 PerPageDropDown(){
   this.Selector =!this.Selector;
+},
+SearchInput(x) {
+  if (x == '') {
+    search = undefined;
+    this.request = CurrentFilters(page);
+    this.getCurrentPageData();
+  }
+  this.SearchUpdater = x;
+},
+SearchEnter(x) {
+  search = this.SearchUpdater;
+  console.log(this.CurrentPage.meta.total);
+  this.request = CurrentFilters(page);
+  this.getCurrentPageData();
 }
 },
 }
@@ -285,7 +311,12 @@ width: 256px;
 height: 48px;
 left: 0px;
 top: 0px;
+background-color: rgb(255, 255, 255, 0.0);
+transition: background-color 0.3s ease-in-out;
+}
 
+.sidenavigation:hover {
+  background-color: rgb(255, 255, 255, 0.1);
 }
 
 .sidenavigationactive {
@@ -553,6 +584,7 @@ font-style: normal;
 font-weight: 400;
 font-size: 16px;
 line-height: 22px;
+z-index: 6;
 
 /* Text/Dark Grey */
 color: rgba(41, 49, 72, 0.8);
@@ -670,9 +702,7 @@ color: #293148;
 }
 
 .Arrow {
-position: absolute;
-right: 16px;
-top: 9px;
+position: relative;
 }
 
 .AddVecButton {
@@ -688,7 +718,12 @@ background: #D90E32;
 /* Shadow */
 box-shadow: 0px 8px 24px rgba(217, 14, 50, 0.12);
 border-radius: 10px;
+transition: background-color 0.5s ease-in-out;
  
+}
+
+.AddVecButton:hover {
+  background: #e53935;
 }
 
 .AddVecButtonBlock {
@@ -732,17 +767,13 @@ color: #FFFFFF;
 .CardsBlock {
 /* Cards */
 
-position: absolute;
-right: 30px;
+position: relative;
 height: fit-content;
-left: 286px;
-top: 212px;
-width: fit-content;
-display: flex;
-flex-direction: row;
-flex-wrap: wrap;
-gap: 30px 0px; 
-justify-content: space-between;
+width: 100%;
+display: grid;
+grid-template-columns: repeat(auto-fill, 354px);
+gap: 30px;
+justify-content: center;
 }
 
 .Card {
@@ -759,11 +790,8 @@ border-radius: 10px;
 .tripledot {
 /* Icons/24/more_horizontal */
 
-position: absolute;
-left: 87.57%;
-right: 5.65%;
-top: 5.97%;
-bottom: 86.87%;
+position: relative;
+
 
 }
 
@@ -978,7 +1006,130 @@ color: rgba(41, 49, 72, 0.8);
 .BottomThings {
   position: relative;
   width: 100%;
+  min-width: 77.9166666666666%;
   height: 79px;
+}
+
+.MainGroup {
+position: absolute;
+right: 30px;
+height: fit-content;
+left: 286px;
+top: 212px;
+width: auto;
+min-width: 77.9166666666666%;
+display: flex;
+flex-direction: column;
+gap: 30px 0px;
+}
+
+.Stub {
+position: relative;
+height: 700px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 30px 0px;
+}
+
+.SomeSmallText7 {
+
+position: relative;
+
+/* Body */
+font-family: 'DM Sans';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 22px;
+/* identical to box height, or 138% */
+text-align: center;
+margin: 0;
+/* Text/Black */
+color: #293148;
+
+}
+
+.ArrowButton {
+  background-color: rgb(255, 255, 255, 0.0);
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 8px;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ArrowButton:hover {
+  background-color: rgb(0, 0, 0, 0.1);
+}
+
+.ArrowButton2 {
+  background-color: rgb(255, 255, 255, 0.0);
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 8px;
+  height: 24px;
+  width: 24px;
+  right: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+
+.ArrowButton2:hover {
+  background-color: rgb(0, 0, 0, 0.1);
+}
+
+.TripleDotAnimation {
+  background-color: rgb(255, 255, 255, 0.0);
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 8px;
+  position: absolute;
+  left: 87.57%;
+  right: 5.65%;
+  top: 5.97%;
+  bottom: 86.87%;
+  height: 26px;
+  width: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+
+.TripleDotAnimation:hover {
+  background-color: rgb(0, 0, 0, 0.1);
+}
+
+.SearchIcon {
+  width: 30px;
+  height: 26px;
+  background-color: rgb(255, 255, 255, 0.0);
+  transition: background-color 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.SearchIcon:hover {
+  background-color: rgb(0, 0, 0, 0.1);
+}
+
+.DropDownMenu-enter-active,
+.DropDownMenu-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.DropDownMenu-enter-from,
+.DropDownMenu-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 </style>
