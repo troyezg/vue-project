@@ -32,7 +32,7 @@
 <div className="header">
   <p className="HeaderBigText">Vechicles</p>
   <div className="Badge">
-      <p className="HeaderSmallText1" v-if="CurrentPage" :key="CurrentPage.meta.total">{{CurrentPage.meta.total}}</p>
+      <p className="HeaderSmallText1" :key="TotalCars">{{TotalCars}}</p>
   </div>
   <div className="AddButton">
     <img src="./assets/iconaddbutton.svg" />
@@ -108,7 +108,7 @@
   <p className="SomeSmallText7">Try to search something else.</p>
 </div>
 <div className="BottomThings" v-if="CurrentPage" :key="CurrentPage.meta">
-    <p className="SomeSmallText5">Showing 9 out of {{CurrentPage.meta.total}}</p>
+    <p className="SomeSmallText5">Showing {{TotalCards}} out of {{CurrentPage.meta.total}}</p>
     <div className="Pagination">
       <div class="ArrowButton" @click="PrevPage();">
       <img src="./assets/chevron_down.svg" style="transform: rotate(90deg); pointer-events: none;" />
@@ -155,22 +155,36 @@ request: CurrentFilters(),
 Selector: false,
 PerPageUpdater: perpage,
 SearchUpdater: '',
+TotalCars: 0,
+TotalCards: 0,
 }
 },
 mounted() {
 this.getCurrentPageData();
+this.getTotalCars();
 },
 methods: {
 getCurrentPageData() {
 fetch(this.request)
 .then(response => response.json())
 .then(data => {
+  this.TotalCards = (Object.keys(data.data)).length;
 if (data.meta.current_page <= data.meta.last_page) {
   this.CurrentPage = data;
 } else {
   page = data.meta.last_page;
 }
 this.PerPageCounter();
+})
+.catch(error => {
+console.error('Произошла ошибка:', error);
+});
+},
+getTotalCars() {
+fetch('https://api.caiman-app.de/api/cars-test?per_page=9&page=1')
+.then(response => response.json())
+.then(data => {
+this.TotalCars = data.meta.total;
 })
 .catch(error => {
 console.error('Произошла ошибка:', error);
@@ -634,6 +648,11 @@ z-index: 5;
 padding: 9px 16px;
 border-radius: 8px;
 background-color: #FFFFFF;
+transition: background-color 0.3s ease-in-out;
+}
+
+.CarPerPageOption:hover {
+background-color: rgb(0, 0, 0, 0.1);
 }
 
 
